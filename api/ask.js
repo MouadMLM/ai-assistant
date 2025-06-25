@@ -5,6 +5,10 @@ export default async function handler(req, res) {
 
   const { question } = req.body;
 
+  if (!question) {
+    return res.status(400).json({ error: 'Question is required' });
+  }
+
   try {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
@@ -17,6 +21,11 @@ export default async function handler(req, res) {
         messages: [{ role: "user", content: question }]
       })
     });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`OpenRouter API error: ${text}`);
+    }
 
     const data = await response.json();
     const answer = data.choices?.[0]?.message?.content || "No response";
