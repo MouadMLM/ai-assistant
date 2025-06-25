@@ -58,7 +58,7 @@ async function sendQuestion(question) {
         question,
         language: lang,
         context: `You are an AI assistant specialized ONLY to answer about our service of creating and integrating AI assistants for websites and apps. 
-                  Give short, clear answers related ONLY to this service. 
+                  Give short, clear answers related to this service. 
                   If you don't know, reply with a short fallback support message.`
       })
     });
