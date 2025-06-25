@@ -6,8 +6,8 @@
     #chat-toggle-button {
       position: fixed;
       bottom: 20px;
-      width:auto;
-      height:auto;
+      width:200px;
+      height:200px;
       right: 20px;
       background: #007bff;
       color: white;
