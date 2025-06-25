@@ -138,6 +138,7 @@ msgBox.addEventListener("click", (e) => {
     let text = target.textContent;
     text = text.replace(/^You:\s*/, '').replace(/^AI:\s*/, '').trim();
     if (text) {
+      input.value = "";
       sendQuestion(text);
     }
   }
