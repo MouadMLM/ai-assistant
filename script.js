@@ -1,23 +1,21 @@
-// Toggle chat visibility
 const toggleButton = document.getElementById("chat-toggle-button");
 const chatBox = document.getElementById("chat-box");
 
 if (toggleButton) {
-  // Initialize button emoji based on chatBox initial display
+
   toggleButton.textContent = chatBox.style.display === "block" ? "❌" : "🤖";
 
   toggleButton.addEventListener("click", () => {
     if (chatBox.style.display === "none" || chatBox.style.display === "") {
       chatBox.style.display = "block";
-      toggleButton.textContent = "❌";  // Change to X when open
+      toggleButton.textContent = "❌";
     } else {
       chatBox.style.display = "none";
-      toggleButton.textContent = "🤖";  // Change to robot when closed
+      toggleButton.textContent = "🤖"; 
     }
   });
 }
 
-// Language messages
 const supportMessages = {
   en: "Sorry, I don't have the answer. Please contact support at support@aiassistant.com.",
   fr: "Désolé, je n'ai pas la réponse. Veuillez contacter le support à support@aiassistant.com.",
@@ -36,7 +34,6 @@ function getCurrentLanguage() {
   return languageSelect ? languageSelect.value : 'en';
 }
 
-// Simple HTML escape to avoid injection
 function escapeHtml(text) {
   return text.replace(/[&<>"']/g, function(m) {
     return {
@@ -49,18 +46,15 @@ function escapeHtml(text) {
   });
 }
 
-// Core send function
 async function sendQuestion(question) {
   if (!question) return;
 
   const msgBox = document.getElementById("chat-messages");
   const lang = getCurrentLanguage();
 
-  // Add user message
   msgBox.innerHTML += `<div><b>You:</b> ${escapeHtml(question)}</div>`;
   msgBox.scrollTop = msgBox.scrollHeight;
 
-  // Show thinking indicator
   const thinkingEl = document.createElement("div");
   thinkingEl.id = "thinking";
   thinkingEl.style.fontStyle = "italic";
@@ -70,7 +64,6 @@ async function sendQuestion(question) {
   msgBox.scrollTop = msgBox.scrollHeight;
 
   try {
-    // We pass a "context" prompt to enforce strict focus on your service
     const res = await fetch('/api/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -89,17 +82,14 @@ async function sendQuestion(question) {
 
     if (res.ok) {
       let answer = data.answer || "";
-
-      // Clean answer from URLs & strange chars
+      
       answer = answer.replace(/https?:\/\/\S+/g, '');
       answer = answer.replace(/[^\w\s.,?!\-ء-ي]/g, '');
 
-      // Limit length ~200 chars max
       if (answer.length > 200) {
         answer = answer.slice(0, 200) + '...';
       }
 
-      // Check relevance by keywords (English base, add more if needed)
       const keywords = ['integration', 'service', 'assistant', 'website', 'app', 'create', 'support'];
       const hasKeywords = keywords.some(k => answer.toLowerCase().includes(k));
 
@@ -119,7 +109,6 @@ async function sendQuestion(question) {
   msgBox.scrollTop = msgBox.scrollHeight;
 }
 
-// Quick question click: immediately send question
 document.querySelectorAll("#chat-quick-questions button").forEach(button => {
   button.addEventListener("click", () => {
     const question = button.dataset.q;
@@ -128,7 +117,6 @@ document.querySelectorAll("#chat-quick-questions button").forEach(button => {
   });
 });
 
-// Main send button click
 document.getElementById("chat-send-button").addEventListener("click", () => {
   const input = document.getElementById("chat-user-input");
   const question = input.value.trim();
@@ -136,10 +124,21 @@ document.getElementById("chat-send-button").addEventListener("click", () => {
   sendQuestion(question);
 });
 
-// Enter key sends question
 document.getElementById("chat-user-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
     document.getElementById("chat-send-button").click();
+  }
+});
+
+const msgBox = document.getElementById("chat-messages");
+msgBox.addEventListener("click", (e) => {
+  let target = e.target;
+  if (target.tagName === "DIV") {
+    let text = target.textContent;
+    text = text.replace(/^You:\s*/, '').replace(/^AI:\s*/, '').trim();
+    if (text) {
+      sendQuestion(text);
+    }
   }
 });
