@@ -1,4 +1,4 @@
-<script>
+
   // Toggle chat visibility (make sure you have #chat-toggle-button somewhere)
   const toggleButton = document.getElementById("chat-toggle-button");
   const chatBox = document.getElementById("chat-box");
@@ -67,4 +67,4 @@
       document.getElementById("chat-send-button").click();
     }
   });
-</script>
+
