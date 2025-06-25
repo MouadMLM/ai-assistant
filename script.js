@@ -70,7 +70,7 @@ async function sendQuestion(question) {
       body: JSON.stringify({
         question,
         language: lang,
-        context: `You are an AI assistant specialized ONLY in creating and integrating AI assistants for websites and apps. 
+        context: `You are an AI assistant specialized ONLY to ansewer about our service of  creating and integrating AI assistants for websites and apps. 
                   Give short, clear answers related ONLY to this service. 
                   If you don't know, reply with a short fallback support message.`
       })
