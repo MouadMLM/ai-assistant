@@ -5,9 +5,9 @@ const languageSelect = document.getElementById("language-select");
 const msgBox = document.getElementById("chat-messages");
 
 const supportMessages = {
-  en: "Sorry, I don't have the answer. Please contact support at support@aiassistant.com.",
-  fr: "Désolé, je n'ai pas la réponse. Veuillez contacter le support à support@aiassistant.com.",
-  ar: "عذراً، لا أملك الإجابة. يرجى التواصل مع الدعم عبر support@aiassistant.com."
+  en: "Sorry, I don't have the answer. Please contact support at Mouadev.",
+  fr: "Désolé, je n'ai pas la réponse. Veuillez contacter le support à Mouadev.",
+  ar: "عذراً، لا أملك الإجابة. يرجى التواصل مع الدعم عبر Mouadev."
 };
 
 const thinkingMessages = {
