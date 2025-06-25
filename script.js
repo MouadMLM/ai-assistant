@@ -1,28 +1,9 @@
 const toggleButton = document.getElementById("chat-toggle-button");
 const chatBox = document.getElementById("chat-box");
+const closeButton = document.getElementById("chat-close-button");
+const languageSelect = document.getElementById("language-select");
+const msgBox = document.getElementById("chat-messages");
 
-// URLs for icons
-const robotIconUrl = "https://www.creativefabrica.com/wp-content/uploads/2023/02/21/Yellow-robot-chatbot-icon-design-Graphics-61955630-2-580x387.png";
-const closeIconUrl = "https://cdn-icons-png.freepik.com/256/5652/5652954.png?semt=ais_hybrid";
-
-if (toggleButton) {
-  // Initialize with robot icon or close icon depending on chat visibility
-  if (chatBox.style.display === "block") {
-    toggleButton.innerHTML = `<img src="${closeIconUrl}" alt="Close" style="width:100px; height:100px;">`;
-  } else {
-    toggleButton.innerHTML = `<img src="${robotIconUrl}" alt="Chatbot" style="width:200px; height:200px;">`;
-  }
-
-  toggleButton.addEventListener("click", () => {
-    if (chatBox.style.display === "none" || chatBox.style.display === "") {
-      chatBox.style.display = "block";
-      toggleButton.innerHTML = `<img src="${closeIconUrl}" alt="Close" style="width:200px; height:200px;">`;
-    } else {
-      chatBox.style.display = "none";
-      toggleButton.innerHTML = `<img src="${robotIconUrl}" alt="Chatbot" style="width:200px; height:200px;">`;
-    }
-  });
-}
 const supportMessages = {
   en: "Sorry, I don't have the answer. Please contact support at support@aiassistant.com.",
   fr: "Désolé, je n'ai pas la réponse. Veuillez contacter le support à support@aiassistant.com.",
@@ -35,32 +16,31 @@ const thinkingMessages = {
   ar: "الذكاء الاصطناعي يفكر..."
 };
 
-const languageSelect = document.getElementById("language-select");
-
 function getCurrentLanguage() {
   return languageSelect ? languageSelect.value : 'en';
 }
 
 function escapeHtml(text) {
-  return text.replace(/[&<>"']/g, function(m) {
-    return {
-      '&': "&amp;",
-      '<': "&lt;",
-      '>': "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[m];
-  });
+  return text.replace(/[&<>"']/g, m => ({
+    '&': "&amp;",
+    '<': "&lt;",
+    '>': "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[m]);
+}
+
+function scrollToBottom() {
+  msgBox.scrollTop = msgBox.scrollHeight;
 }
 
 async function sendQuestion(question) {
   if (!question) return;
 
-  const msgBox = document.getElementById("chat-messages");
   const lang = getCurrentLanguage();
 
-  msgBox.innerHTML += `<div><b>You:</b> ${escapeHtml(question)}</div>`;
-  msgBox.scrollTop = msgBox.scrollHeight;
+  msgBox.innerHTML += `<div class="question"><b>Vous:</b> ${escapeHtml(question)}</div>`;
+  scrollToBottom();
 
   const thinkingEl = document.createElement("div");
   thinkingEl.id = "thinking";
@@ -68,7 +48,7 @@ async function sendQuestion(question) {
   thinkingEl.style.color = "#888";
   thinkingEl.textContent = thinkingMessages[lang] || thinkingMessages['en'];
   msgBox.appendChild(thinkingEl);
-  msgBox.scrollTop = msgBox.scrollHeight;
+  scrollToBottom();
 
   try {
     const res = await fetch('/api/ask', {
@@ -77,13 +57,21 @@ async function sendQuestion(question) {
       body: JSON.stringify({
         question,
         language: lang,
-        context: `You are an AI assistant specialized ONLY to ansewer about our service of  creating and integrating AI assistants for websites and apps. 
+        context: `You are an AI assistant specialized ONLY to answer about our service of creating and integrating AI assistants for websites and apps. 
                   Give short, clear answers related ONLY to this service. 
                   If you don't know, reply with a short fallback support message.`
       })
     });
 
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      thinkingEl.remove();
+      msgBox.innerHTML += `<div class="ai-answer"><b>AI-Assistant:</b> Server error. Please try again later.</div>`;
+      scrollToBottom();
+      return;
+    }
 
     thinkingEl.remove();
 
@@ -91,7 +79,7 @@ async function sendQuestion(question) {
       let answer = data.answer || "";
       
       answer = answer.replace(/https?:\/\/\S+/g, '');
-      answer = answer.replace(/[^\w\s.,?!\-ء-ي]/g, '');
+      answer = answer.replace(/[^\w\s.,?!\-ء-ي@]/g, ''); // allow @ for emails
 
       if (answer.length > 200) {
         answer = answer.slice(0, 200) + '...';
@@ -104,22 +92,39 @@ async function sendQuestion(question) {
         answer = supportMessages[lang] || supportMessages['en'];
       }
 
-      msgBox.innerHTML += `<div><b>AI:</b> ${escapeHtml(answer)}</div>`;
+      msgBox.innerHTML += `<div class="ai-answer"><b>AI-Assistant:</b> ${escapeHtml(answer)}</div>`;
     } else {
-      msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(data.error)}</div>`;
+      msgBox.innerHTML += `<div class="ai-answer"><b>AI-Assistant:</b> Error: ${escapeHtml(data.error || 'Unknown error')}</div>`;
     }
   } catch (error) {
     thinkingEl.remove();
-    msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(error.message)}</div>`;
+    msgBox.innerHTML += `<div class="ai-answer"><b>AI-Assistant:</b> Error: ${escapeHtml(error.message)}</div>`;
   }
 
-  msgBox.scrollTop = msgBox.scrollHeight;
+  scrollToBottom();
+}
+
+if (toggleButton) {
+  toggleButton.addEventListener("click", () => {
+    if (chatBox.style.display === "none" || chatBox.style.display === "") {
+      chatBox.style.display = "block";
+      toggleButton.style.display = "none";
+    } else {
+      chatBox.style.display = "none";
+    }
+  });
+}
+
+if (closeButton) {
+  closeButton.addEventListener("click", () => {
+    chatBox.style.display = "none";
+    toggleButton.style.display = "block";
+  });
 }
 
 document.querySelectorAll("#chat-quick-questions button").forEach(button => {
   button.addEventListener("click", () => {
     const question = button.dataset.q;
-    document.getElementById("chat-user-input").value = question;
     sendQuestion(question);
   });
 });
@@ -138,17 +143,15 @@ document.getElementById("chat-user-input").addEventListener("keydown", (e) => {
   }
 });
 
-const msgBox = document.getElementById("chat-messages");
 msgBox.addEventListener("click", (e) => {
   let target = e.target;
   if (target.tagName === "DIV") {
     let text = target.textContent;
-    text = text.replace(/^You:\s*/, '').replace(/^AI:\s*/, '').trim();
+    text = text.replace(/^You:\s*/i, '').replace(/^AI:\s*/i, '').trim();
     if (text) {
       const input = document.getElementById("chat-user-input");
-      input.value = ""; 
+      input.value = "";
       sendQuestion(text);
     }
   }
 });
-
