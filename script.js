@@ -1,21 +1,28 @@
 const toggleButton = document.getElementById("chat-toggle-button");
 const chatBox = document.getElementById("chat-box");
 
-if (toggleButton) {
+// URLs for icons
+const robotIconUrl = "https://www.creativefabrica.com/wp-content/uploads/2023/02/21/Yellow-robot-chatbot-icon-design-Graphics-61955630-2-580x387.png";
+const closeIconUrl = "https://cdn-icons-png.freepik.com/256/5652/5652954.png?semt=ais_hybrid";
 
-  toggleButton.textContent = chatBox.style.display === "block" ? "❌" : "🤖";
+if (toggleButton) {
+  // Initialize with robot icon or close icon depending on chat visibility
+  if (chatBox.style.display === "block") {
+    toggleButton.innerHTML = `<img src="${closeIconUrl}" alt="Close" style="width:24px; height:24px;">`;
+  } else {
+    toggleButton.innerHTML = `<img src="${robotIconUrl}" alt="Chatbot" style="width:24px; height:24px;">`;
+  }
 
   toggleButton.addEventListener("click", () => {
     if (chatBox.style.display === "none" || chatBox.style.display === "") {
       chatBox.style.display = "block";
-      toggleButton.textContent = "❌";
+      toggleButton.innerHTML = `<img src="${closeIconUrl}" alt="Close" style="width:24px; height:24px;">`;
     } else {
       chatBox.style.display = "none";
-      toggleButton.textContent = "🤖"; 
+      toggleButton.innerHTML = `<img src="${robotIconUrl}" alt="Chatbot" style="width:24px; height:24px;">`;
     }
   });
 }
-
 const supportMessages = {
   en: "Sorry, I don't have the answer. Please contact support at support@aiassistant.com.",
   fr: "Désolé, je n'ai pas la réponse. Veuillez contacter le support à support@aiassistant.com.",
@@ -138,8 +145,10 @@ msgBox.addEventListener("click", (e) => {
     let text = target.textContent;
     text = text.replace(/^You:\s*/, '').replace(/^AI:\s*/, '').trim();
     if (text) {
-      input.value = "";
+      const input = document.getElementById("chat-user-input");
+      input.value = ""; 
       sendQuestion(text);
     }
   }
 });
+
