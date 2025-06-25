@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Chat Assistant</title>
+  <style>
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #chat-toggle-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #007bff;
+      color: white;
+      padding: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 1000;
+    }
+    #chat-box {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      overflow: hidden;
+      z-index: 999;
+    }
+    #chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #007bff;
+      color: white;
+      padding: 10px;
+    }
+    #chat-quick-questions {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    #chat-quick-questions button {
+      margin: 3px;
+      padding: 5px 10px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #chat-messages {
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    #chat-input {
+      display: flex;
+      border-top: 1px solid #eee;
+      padding: 10px;
+    }
+    #chat-user-input {
+      flex: 1;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #chat-send-button {
+      margin-left: 5px;
+      padding: 5px 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #chat-credit {
+      text-align: center;
+      font-size: 12px;
+      padding: 10px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Chat Button -->
+  <div id="chat-toggle-button" title="Open Chat">🤖</div>
+
+  <!-- Chat Box -->
+  <div id="chat-box">
+    <div id="chat-header">
+      <div><b>AI Assistant</b></div>
+      <select id="language-select" title="Choose Language">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="ar">AR</option>
+      </select>
+    </div>
+
+    <div id="chat-quick-questions" aria-label="Popular Questions">
+      <button data-q="What can you do?">What can you do?</button>
+      <button data-q="Tell me a fun fact.">Tell me a fun fact.</button>
+      <button data-q="How do I contact support?">How do I contact support?</button>
+      <button data-q="Do you offer free delivery?">Do you offer free delivery?</button>
+    </div>
+
+    <div id="chat-messages"></div>
+
+    <div id="chat-input">
+      <input type="text" id="chat-user-input" placeholder="Ask your question..." />
+      <button id="chat-send-button">Send</button>
+    </div>
+
+    <p id="chat-credit">
+      Powered by&nbsp;
+      <a href="https://instagram.com/mouad_lamghari" target="_blank" rel="noopener noreferrer">
+        <b>Mouadev</b>
+      </a>
+    </p>
+  </div>
+
+  <script>
+    // Toggle chat visibility
+    const toggleButton = document.getElementById("chat-toggle-button");
+    const chatBox = document.getElementById("chat-box");
+
+    toggleButton.addEventListener("click", () => {
+      chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
+    });
+
+    // Quick question click
+    document.querySelectorAll("#chat-quick-questions button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.getElementById("chat-user-input").value = button.dataset.q;
+      });
+    });
+
+    // Dummy send handler (replace with real API)
+    document.getElementById("chat-send-button").addEventListener("click", () => {
+      const input = document.getElementById("chat-user-input");
+      const message = input.value.trim();
+      if (!message) return;
+
+      const msgBox = document.getElementById("chat-messages");
+      msgBox.innerHTML += `<div><b>You:</b> ${message}</div>`;
+      msgBox.innerHTML += `<div><b>AI:</b> (Response goes here...)</div>`;
+      input.value = "";
+      msgBox.scrollTop = msgBox.scrollHeight;
+    });
+  </script>
+
+</body>
+</html>
+
