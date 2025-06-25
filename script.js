@@ -22,8 +22,19 @@ document.getElementById("chat-send-button").addEventListener("click", async () =
   if (!question) return;
 
   const msgBox = document.getElementById("chat-messages");
-  msgBox.innerHTML += `<div><b>You:</b> ${question}</div>`;
+
+  // Add user message
+  msgBox.innerHTML += `<div><b>You:</b> ${escapeHtml(question)}</div>`;
   input.value = "";
+  msgBox.scrollTop = msgBox.scrollHeight;
+
+  // Show thinking indicator
+  const thinkingEl = document.createElement("div");
+  thinkingEl.id = "thinking";
+  thinkingEl.style.fontStyle = "italic";
+  thinkingEl.style.color = "#888";
+  thinkingEl.textContent = "AI is thinking...";
+  msgBox.appendChild(thinkingEl);
   msgBox.scrollTop = msgBox.scrollHeight;
 
   try {
@@ -35,13 +46,18 @@ document.getElementById("chat-send-button").addEventListener("click", async () =
 
     const data = await res.json();
 
+    // Remove thinking
+    thinkingEl.remove();
+
     if (res.ok) {
-      msgBox.innerHTML += `<div><b>AI:</b> ${data.answer}</div>`;
+      // Show AI answer (short and promo-limited should be handled by /api/ask)
+      msgBox.innerHTML += `<div><b>AI:</b> ${escapeHtml(data.answer)}</div>`;
     } else {
-      msgBox.innerHTML += `<div><b>AI:</b> Error: ${data.error}</div>`;
+      msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(data.error)}</div>`;
     }
   } catch (error) {
-    msgBox.innerHTML += `<div><b>AI:</b> Error: ${error.message}</div>`;
+    thinkingEl.remove();
+    msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(error.message)}</div>`;
   }
 
   msgBox.scrollTop = msgBox.scrollHeight;
@@ -53,3 +69,16 @@ document.getElementById("chat-user-input").addEventListener("keydown", (e) => {
     document.getElementById("chat-send-button").click();
   }
 });
+
+// Simple HTML escape to avoid injection
+function escapeHtml(text) {
+  return text.replace(/[&<>"']/g, function(m) {
+    return {
+      '&': "&amp;",
+      '<': "&lt;",
+      '>': "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[m];
+  });
+}
