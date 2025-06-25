@@ -8,9 +8,9 @@ const closeIconUrl = "https://cdn-icons-png.freepik.com/256/5652/5652954.png?sem
 if (toggleButton) {
   // Initialize with robot icon or close icon depending on chat visibility
   if (chatBox.style.display === "block") {
-    toggleButton.innerHTML = `<img src="${closeIconUrl}" alt="Close" style="width:24px; height:24px;">`;
+    toggleButton.innerHTML = `<img src="${closeIconUrl}" alt="Close" style="width:auto; height:auto;">`;
   } else {
-    toggleButton.innerHTML = `<img src="${robotIconUrl}" alt="Chatbot" style="width:24px; height:24px;">`;
+    toggleButton.innerHTML = `<img src="${robotIconUrl}" alt="Chatbot" style="width:auto; height:auto;">`;
   }
 
   toggleButton.addEventListener("click", () => {
