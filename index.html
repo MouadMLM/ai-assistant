@@ -1,48 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Chat Assistant | By Mouadev</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <img class="hero-icon"
+    src="https://www.creativefabrica.com/wp-content/uploads/2023/02/21/Yellow-robot-chatbot-icon-design-Graphics-61955630-2-580x387.png"
+    alt="Chatbot" />
+  <h1>Bonjour, je suis votre assistant IA !</h1>
+  <p>Vous pouvez me personnaliser et m’intégrer à votre site ou application.</p>
+ <a href="https://instagram.com/ton_nom_utilisateur" target="_blank" rel="noopener noreferrer" class="chat-button" style="text-decoration:none;">
+  Contactez-Nous
+</a>
+  <div id="chat-box">
+    <div id="chat-header">
+      <div><b>&nbsp;AI Assistant</b></div>
+      <select id="language-select" title="Choose Language">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="ar">AR</option>
+      </select>
+      <button id="chat-close-button">
+        <img
+          src="https://png.pngtree.com/png-vector/20220628/ourmid/pngtree-icon-close-button-incorrect-forbidden-png-image_5286028.png"
+          alt="Close" style="width:36px; height:32px;">
+      </button>
+    </div>
+    <div id="chat-quick-questions" aria-label="Popular Questions">
+      <button data-q="What can you do?">Est-ce que le chat m’aide sur mon site ?</-button>
+      <button data-q="Tell me a fun fact.">Qui a développé ce modèle ?</button>
+      <button data-q="How do I contact support?">Comment contacter le développeur ?</button>
+      <button data-q="Do you offer free delivery?">Parle-moi des offres ?</button>
+    </div>
 
-<div id="chat-box">
-  <div id="chat-header">
-    <div><b>AI Assistant</b></div>
-    <select id="language-select" title="Choose Language">
-      <option value="en">EN</option>
-      <option value="fr">FR</option>
-      <option value="ar">AR</option>
-    </select>
+    <div id="chat-messages" style="max-height: 300px; overflow-y: auto;"></div>
+
+    <div id="chat-input">
+      <input type="text" id="chat-user-input" placeholder="Tapez votre question..." />
+      <button id="chat-send-button"><b>Envoyer</b></button>
+    </div>
+
+    <p id="chat-credit">
+      Powered by&nbsp;
+      <a href="https://instagram.com/mouad_lamghari" target="_blank" rel="noopener noreferrer">
+        <b id="chat-devloper">MOUADEV</b>
+      </a>
+    </p>
   </div>
-  
-  <div id="chat-quick-questions" aria-label="Popular Questions">
-    <button data-q="What can you do?">What can you do?</button>
-    <button data-q="Tell me a fun fact.">Tell me a fun fact.</button>
-    <button data-q="How do I contact support?">How do I contact support?</button>
-    <button data-q="Do you offer free delivery?">Do you offer free delivery?</button>
-  </div>
+  <div id="chat-toggle-label">Comment je peux vous aider ?</div>
+  <div id="chat-toggle-button" title="Chat with AI" onclick="toggleChat()"></div>
 
-  <div id="chat-messages" style="max-height: 300px; overflow-y: auto;"></div>
-
-  <div id="chat-input">
-    <input type="text" id="chat-user-input" placeholder="Ask your question..." />
-    <button id="chat-send-button">Send</button>
-  </div>
-
-  <p id="chat-credit">
-    Powered by&nbsp;
-    <a href="https://instagram.com/mouad_lamghari" target="_blank" rel="noopener noreferrer">
-      <b>Mouadev</b>
-    </a>
-  </p>
-</div>
-
-<!-- ✅ Add this -->
-<div id="chat-toggle-button" title="Chat with AI">💬</div>
-
-<script src="script.js"></script>
 </body>
+<script src="script.js"></script>
+
 </html>
