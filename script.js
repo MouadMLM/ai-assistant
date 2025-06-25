@@ -1,74 +1,40 @@
-// Toggle chat visibility (make sure you have #chat-toggle-button somewhere)
+// Toggle chat visibility
 const toggleButton = document.getElementById("chat-toggle-button");
 const chatBox = document.getElementById("chat-box");
 
 if (toggleButton) {
+  // Initialize button emoji based on chatBox initial display
+  toggleButton.textContent = chatBox.style.display === "block" ? "❌" : "🤖";
+
   toggleButton.addEventListener("click", () => {
-    chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
+    if (chatBox.style.display === "none" || chatBox.style.display === "") {
+      chatBox.style.display = "block";
+      toggleButton.textContent = "❌";  // Change to X when open
+    } else {
+      chatBox.style.display = "none";
+      toggleButton.textContent = "🤖";  // Change to robot when closed
+    }
   });
 }
 
-// Quick question click: set input value
-document.querySelectorAll("#chat-quick-questions button").forEach(button => {
-  button.addEventListener("click", () => {
-    document.getElementById("chat-user-input").value = button.dataset.q;
-  });
-});
+// Language messages
+const supportMessages = {
+  en: "Sorry, I don't have the answer. Please contact support at support@aiassistant.com.",
+  fr: "Désolé, je n'ai pas la réponse. Veuillez contacter le support à support@aiassistant.com.",
+  ar: "عذراً، لا أملك الإجابة. يرجى التواصل مع الدعم عبر support@aiassistant.com."
+};
 
-// Main send handler
-document.getElementById("chat-send-button").addEventListener("click", async () => {
-  const input = document.getElementById("chat-user-input");
-  const question = input.value.trim();
-  if (!question) return;
+const thinkingMessages = {
+  en: "AI is thinking...",
+  fr: "L'IA réfléchit...",
+  ar: "الذكاء الاصطناعي يفكر..."
+};
 
-  const msgBox = document.getElementById("chat-messages");
+const languageSelect = document.getElementById("language-select");
 
-  // Add user message
-  msgBox.innerHTML += `<div><b>You:</b> ${escapeHtml(question)}</div>`;
-  input.value = "";
-  msgBox.scrollTop = msgBox.scrollHeight;
-
-  // Show thinking indicator
-  const thinkingEl = document.createElement("div");
-  thinkingEl.id = "thinking";
-  thinkingEl.style.fontStyle = "italic";
-  thinkingEl.style.color = "#888";
-  thinkingEl.textContent = "AI is thinking...";
-  msgBox.appendChild(thinkingEl);
-  msgBox.scrollTop = msgBox.scrollHeight;
-
-  try {
-    const res = await fetch('/api/ask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question })
-    });
-
-    const data = await res.json();
-
-    // Remove thinking
-    thinkingEl.remove();
-
-    if (res.ok) {
-      // Show AI answer (short and promo-limited should be handled by /api/ask)
-      msgBox.innerHTML += `<div><b>AI:</b> ${escapeHtml(data.answer)}</div>`;
-    } else {
-      msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(data.error)}</div>`;
-    }
-  } catch (error) {
-    thinkingEl.remove();
-    msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(error.message)}</div>`;
-  }
-
-  msgBox.scrollTop = msgBox.scrollHeight;
-});
-
-// Optional: Enter key sends the question
-document.getElementById("chat-user-input").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    document.getElementById("chat-send-button").click();
-  }
-});
+function getCurrentLanguage() {
+  return languageSelect ? languageSelect.value : 'en';
+}
 
 // Simple HTML escape to avoid injection
 function escapeHtml(text) {
@@ -82,3 +48,98 @@ function escapeHtml(text) {
     }[m];
   });
 }
+
+// Core send function
+async function sendQuestion(question) {
+  if (!question) return;
+
+  const msgBox = document.getElementById("chat-messages");
+  const lang = getCurrentLanguage();
+
+  // Add user message
+  msgBox.innerHTML += `<div><b>You:</b> ${escapeHtml(question)}</div>`;
+  msgBox.scrollTop = msgBox.scrollHeight;
+
+  // Show thinking indicator
+  const thinkingEl = document.createElement("div");
+  thinkingEl.id = "thinking";
+  thinkingEl.style.fontStyle = "italic";
+  thinkingEl.style.color = "#888";
+  thinkingEl.textContent = thinkingMessages[lang] || thinkingMessages['en'];
+  msgBox.appendChild(thinkingEl);
+  msgBox.scrollTop = msgBox.scrollHeight;
+
+  try {
+    // We pass a "context" prompt to enforce strict focus on your service
+    const res = await fetch('/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question,
+        language: lang,
+        context: `You are an AI assistant specialized ONLY in creating and integrating AI assistants for websites and apps. 
+                  Give short, clear answers related ONLY to this service. 
+                  If you don't know, reply with a short fallback support message.`
+      })
+    });
+
+    const data = await res.json();
+
+    thinkingEl.remove();
+
+    if (res.ok) {
+      let answer = data.answer || "";
+
+      // Clean answer from URLs & strange chars
+      answer = answer.replace(/https?:\/\/\S+/g, '');
+      answer = answer.replace(/[^\w\s.,?!\-ء-ي]/g, '');
+
+      // Limit length ~200 chars max
+      if (answer.length > 200) {
+        answer = answer.slice(0, 200) + '...';
+      }
+
+      // Check relevance by keywords (English base, add more if needed)
+      const keywords = ['integration', 'service', 'assistant', 'website', 'app', 'create', 'support'];
+      const hasKeywords = keywords.some(k => answer.toLowerCase().includes(k));
+
+      if (!answer || !hasKeywords) {
+        answer = supportMessages[lang] || supportMessages['en'];
+      }
+
+      msgBox.innerHTML += `<div><b>AI:</b> ${escapeHtml(answer)}</div>`;
+    } else {
+      msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(data.error)}</div>`;
+    }
+  } catch (error) {
+    thinkingEl.remove();
+    msgBox.innerHTML += `<div><b>AI:</b> Error: ${escapeHtml(error.message)}</div>`;
+  }
+
+  msgBox.scrollTop = msgBox.scrollHeight;
+}
+
+// Quick question click: immediately send question
+document.querySelectorAll("#chat-quick-questions button").forEach(button => {
+  button.addEventListener("click", () => {
+    const question = button.dataset.q;
+    document.getElementById("chat-user-input").value = question;
+    sendQuestion(question);
+  });
+});
+
+// Main send button click
+document.getElementById("chat-send-button").addEventListener("click", () => {
+  const input = document.getElementById("chat-user-input");
+  const question = input.value.trim();
+  input.value = "";
+  sendQuestion(question);
+});
+
+// Enter key sends question
+document.getElementById("chat-user-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("chat-send-button").click();
+  }
+});
