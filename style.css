@@ -385,10 +385,10 @@
 
       #language-select {
         position: relative;
-        right: 110px;
-        font-size: 11px;
+        right: 120px;
+        font-size: 12px;
         background-color: #ffffff;
-        border-radius: 30%;
+        border-radius: 20%;
       }
 
       footer {
