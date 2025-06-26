@@ -84,7 +84,7 @@ Easily extend with your own messages.
 
 If you get stuck or want to customize this widget for your business:
 
-📧 Contact: Mouadev at http://t.ly/_QWH8
+📧 Contact: Mouadev at http://t.ly/_QWH8 </br>
 📄 License
 
 MIT — Free to use and modify.
