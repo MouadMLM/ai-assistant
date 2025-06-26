@@ -18,7 +18,10 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "mistralai/mistral-small-3.2-24b-instruct",
-        messages: [{ role: "user", content: question }]
+        messages: [
+          { role: "system", content: context || "You are a helpful assistant." },
+          { role: "user", content: question }
+        ]
       })
     });
 
