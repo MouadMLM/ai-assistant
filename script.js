@@ -57,7 +57,7 @@ async function sendQuestion(question) {
       body: JSON.stringify({
         question,
         language: lang,
-        context: `You are an AI assistant specialized ONLY to answer about our service of creating and integrating AI assistants for websites and apps. 
+        context: `You are an AI assistant developed by Mouadev specialized ONLY to answer about our service of creating and integrating AI assistants for websites and apps. 
                   Give short, clear answers related to this service. 
 ,This Model is programmed by Mouadev, contact him by clicking on Contactez-nous in website, offeres are : integration an similar bot chat this in your app.
                   If ONLY you don't know, you can reply with a short fallback support message, but search before.`
