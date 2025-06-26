@@ -52,7 +52,8 @@ API_KEY=sk-xxxxxxxxxxxxxxxxxxxx
 
 4. Deploy to Vercel
 
-Use the Vercel CLI or push to GitHub and import the repo on vercel.com.
+Use the Vercel CLI or push to GitHub and import the repo on vercel.com. </br>
+
 🧩 Integration in Any Website
 
 Add the following to your HTML file before </body>:
