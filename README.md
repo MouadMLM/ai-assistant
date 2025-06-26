@@ -83,12 +83,15 @@ Supports fallback support messages in:
 
     Arabic
 
-Easily extend with your own messages.
+Easily extend with your own messages. </br>
+
+
 🤝 Need Help?
 
 If you get stuck or want to customize this widget for your business:
 
 📧 Contact: Mouadev at http://t.ly/_QWH8 </br>
+
 📄 License
 
 MIT — Free to use and modify.
