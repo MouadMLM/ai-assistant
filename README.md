@@ -71,7 +71,7 @@ Add the following to your HTML file before </body>:
 
 The system prompt is customizable and can be changed in the JS frontend sendQuestion() call:
 
-context: `You are an AI assistant specialized ONLY to answer about our service of creating and integrating AI assistants for websites and apps. ...`
+context: `You are an AI assistant specialized ONLY to answer about our service or website of .........`
 
 🌐 Language Support
 
