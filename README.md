@@ -1,6 +1,9 @@
 🧠 AI Assistant Integration Widget
 
 An embeddable AI assistant for websites and apps, built using Next.js (API route), HTML/CSS/JS frontend, and powered by OpenRouter.
+
+Exemple 👉🏻 https://ai-assistant-flame-iota.vercel.app/
+
 🚀 Features
 
     Chat widget with toggle & close
