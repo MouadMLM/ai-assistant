@@ -56,16 +56,7 @@ Use the Vercel CLI or push to GitHub and import the repo on vercel.com. </br>
 
 🧩 Integration in Any Website
 
-Add the following to your HTML file before </body>:
-
-<!-- Include the AI Assistant Widget -->
-<link rel="stylesheet" href="https://your-domain.com/styles/chatbox.css" />
-<div id="chat-box-wrapper">
-  <!-- Chatbox will be injected here -->
-</div>
-<script src="https://your-domain.com/widget.js" defer></script>
-
-    Replace your-domain.com with your actual Vercel or custom domain.
+Contact me!  👇🏻
 
 🧪 Example Context
 
